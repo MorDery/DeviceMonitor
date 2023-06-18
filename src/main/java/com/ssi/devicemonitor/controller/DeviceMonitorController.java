@@ -15,13 +15,14 @@ import java.util.TimerTask;
 public class DeviceMonitorController {
     @FXML
     private ListView<Device> deviceListView;
-
     @FXML
     private TextField deviceNameTextField;
-
     @FXML
     private Button addDeviceButton;
-
+    @FXML
+    private Label deviceDetailListView;
+    @FXML
+    private Button hideDeviceDetailButton;
     private DeviceMonitor deviceMonitor;
 
 
@@ -38,16 +39,41 @@ public class DeviceMonitorController {
         // Add context menu to ListView
         ContextMenu contextMenu = new ContextMenu();
         MenuItem removeItem = new MenuItem("Remove");
+        MenuItem editItem = new MenuItem("Edit");
+        contextMenu.getItems().addAll(removeItem,editItem);
+        deviceListView.setContextMenu(contextMenu);
 
         removeItem.setOnAction(event -> {
             Device selectedDevice = deviceListView.getSelectionModel().getSelectedItem();
             if (selectedDevice != null) {
                 deviceMonitor.removeDevice(selectedDevice);
+                refreshListView();
+            }
+        });
+        editItem.setOnAction(event -> {
+            Device selectedDevice = deviceListView.getSelectionModel().getSelectedItem();
+            if (selectedDevice != null) {
+                //get the edit detail
+                deviceMonitor.editDevice(selectedDevice, EditDeviceController.display(selectedDevice));
+                refreshListView();
             }
         });
 
-        contextMenu.getItems().addAll(removeItem);
-        deviceListView.setContextMenu(contextMenu);
+        addDeviceButton.setOnAction(event ->{
+            deviceMonitor.addDevice(AddDeviceController.display());
+            refreshListView();
+        });
+
+        deviceListView.setOnMouseClicked(mouseEvent -> {
+            Device selectedDevice = deviceListView.getSelectionModel().getSelectedItem();
+            if (selectedDevice != null) {
+                deviceDetailListView.setText("Device Details:\n\n" +selectedDevice.toString());
+            }
+        });
+
+        hideDeviceDetailButton.setOnAction(event ->{
+            deviceDetailListView.setText("");
+        });
 
     }
 

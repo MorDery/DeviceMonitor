@@ -27,6 +27,12 @@ public class DeviceMonitor {
     }
 
     public void removeDevice(Device device) {
+        this.devices.remove(device);
+    }
+
+    public void editDevice(Device deviceBefore, Device deviceAfter) {
+        this.devices.remove(deviceBefore);
+        this.devices.add(deviceAfter);
     }
 
 
